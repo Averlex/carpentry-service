@@ -7,13 +7,13 @@ webapp/static/css/font*.css linguist-vendored
 webapp/static/js/* linguist-vendored
 
 # Base and static Django templates
-webapp/templates/base.html linguist-generated
-webapp/templates/login.html linguist-generated
-webapp/templates/logout.html linguist-generated
-webapp/templates/signup.html linguist-generated
-webapp/templates/policy.html linguist-generated
+webapp/templates/webapp/base.html linguist-generated
+webapp/templates/webapp/login.html linguist-generated
+webapp/templates/webapp/logout.html linguist-generated
+webapp/templates/webapp/signup.html linguist-generated
+webapp/templates/webapp/policy.html linguist-generated
 
 # Amother Django templates
-webapp/templates/about.html linguist-generated
-webapp/templates/index.html linguist-generated
-webapp/templates/profile.html linguist-generated
+webapp/templates/webapp/about.html linguist-generated
+webapp/templates/webapp/index.html linguist-generated
+webapp/templates/webapp/profile.html linguist-generated
