@@ -1,0 +1,14 @@
+# Third-party CSS
+webapp/static/css/bootstrap*.css linguist-vendored
+webapp/static/css/carousel.css linguist-vendored
+webapp/static/css/font*.css linguist-vendored
+
+# Third-party JS
+webapp/static/js/* linguist-vendored
+
+# Base and static Django templates
+webapp/templates/base.html linguist-generated
+webapp/templates/login.html linguist-generated
+webapp/templates/logout.html linguist-generated
+webapp/templates/signup.html linguist-generated
+webapp/templates/policy.html linguist-generated
