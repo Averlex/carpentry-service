@@ -1,0 +1,144 @@
+{% extends './base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block title %}Carpentry Service{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static '/css/carousel.css' %}">
+    <link rel="stylesheet" href="{% static '/css/index.css' %}">
+{% endblock %}
+
+{% block extracontent %}
+    <div id="myCarousel" class="carousel slide mb-6" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+        <img src="{% static '/img/large2.jpg' %}">
+        <div class="container">
+            <div class="carousel-caption text-start">
+            <h1>Мы делаем лучшие доски.</h1>
+            <p class="opacity-75">И фоткаем их со вкусной едой.</p>
+            <p><a class="btn btn-lg btn-success custom-btn-style" href="/about/">О нас</a></p>
+            </div>
+        </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static '/img/large3.jpg' %}">
+            <div class="container">
+            <div class="carousel-caption">
+            <h1>Показываем их на фоне других досок.</h1>
+            <p>Потому что наши лучше.</p>
+            <p><a class="btn btn-lg btn-success custom-btn-style" href="/signup/">Зарегистрироваться</a></p>
+            </div>
+        </div>
+        </div>
+        <div class="carousel-item">
+        <img src="{% static '/img/large1.jpg' %}">
+        <div class="container">
+            <div class="carousel-caption text-end">
+            <h1>И фоткаем их крупным планом.</h1>
+            <p>Потому что можем себе позволить.</p>
+            <p><a class="btn btn-lg btn-success custom-btn-style" href="/order/">Сделать заказ</a></p>
+            </div>
+        </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+    </div>
+
+
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+    <div class="container marketing">
+
+    <div class="row">
+        <h1 class="col-md-12 d-flex justify-content-center align-items-center pb-4 mb-5">3 причины, чтобы выбрать наши доски:</h1>
+    </div>
+
+    <!-- Three columns of text below the carousel -->
+    <div class="row">
+        <div class="col-lg-4">
+        <img src="{% static '/img/small1.png' %}" style="width: 140px; height: 140px;">
+        <h2 class="fw-normal">Идеальны с кофе</h2>
+        <p>Наши доски прекрсно смотрятся, если насыпать на них кофейных зерен.<br>А запах - еще лучше.</p>
+        <!-- <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p> -->
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+        <img src="{% static '/img/small2.png' %}" style="width: 140px; height: 140px;">
+        <h2 class="fw-normal">Идеальны для подарка</h2>
+        <p>Можно порадовать близкого стильным подарком. Можем сделать красивую коробку - тоже деревянную.</p>
+        <!-- <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p> -->
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+        <img src="{% static '/img/small3.png' %}" style="width: 140px; height: 140px;">
+        <h2 class="fw-normal">Идеальны для коллектива</h2>
+        <p>Если вас много, сделаем доски для всех - это не проблема.</p>
+        <!-- <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p> -->
+        </div><!-- /.col-lg-4 -->
+    </div><!-- /.row -->
+
+
+    <!-- START THE FEATURETTES -->
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7">
+        <h2 class="featurette-heading fw-normal lh-1">Режьте на них хлеб. <span class="text-body-secondary">Так получится вкуснее.</span></h2>
+        <p class="lead">Можете порезать них хоть кабана. Он тоже получится вкуснее, особенно, если посыпать его этой красной штукой.</p>
+        </div>
+        <div class="col-md-5">
+        <img src="{% static '/img/medium1.jpg' %}" style="width: 500px; height: 500px;">
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7 order-md-2">
+        <h2 class="featurette-heading fw-normal lh-1">Да, с них можно пить чай. <span class="text-body-secondary">Попробуйте сами.</span></h2>
+        <p class="lead">Вы можете буквально пить с них чай. Если, конечно, Вы не умеете пользоваться чашками.</p>
+        </div>
+        <div class="col-md-5 order-md-1">
+        <img src="{% static '/img/medium2.jpg' %}" style="width: 500px; height: 500px;"> 
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7">
+        <h2 class="featurette-heading fw-normal lh-1">Самое время заказать себе доску. <span class="text-body-secondary">Однозначно.</span></h2>
+        <p class="lead">Большую, маленькую, толстую, тонкую - сделаем любую. Вам решать, что Вы будете с ней делать, но удовлетворим Ваши самые смелые фантазии.</p>
+        </div>
+        <div class="col-md-5">
+        <img src="{% static '/img/medium3.jpg' %}" style="width: 500px; height: 500px;"> 
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <!-- /END THE FEATURETTES -->
+
+    </div><!-- /.container -->
+{% endblock %}
+
+{% block externals %}
+    {% load static %}
+    <script src="../../static/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/css/signup.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="form-outer">
+        <div class="header container d-flex justify-content-center">
+            <h3 class="mt-3 my-3">Зарегистрируйтесь для оформления заказа</h3>
+        </div>
+
+        <form id="signup-form" method="POST" action="" class="container ">
+            {% csrf_token %}
+            <div class="row col-md-12">
+                <div class="col-md-3"></div>
+                <div class="card my-3 py-3 px-3 col-md-6">
+                    <div class="form-section py-3">
+                        {% if form.success %}
+                            <div class="alert alert-success alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {{form.success_message}}
+                            </div>
+                        {% endif %}
+
+                        <div class="row mb-3 d-flex justify-content-around">
+                            <div class="col-md-2 label-col">
+                                {{ form.username.label_tag }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.username }}
+                                {% for error in form.username.errors %}
+                                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div class="row mb-3 d-flex justify-content-around">
+                            <div class="col-md-2 label-col">
+                                {{ form.password.label_tag }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.password }}
+                                {% for error in form.password.errors %}
+                                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div class="row mb-3 d-flex justify-content-around">
+                            <div class="col-md-2 label-col">
+                                {{ form.email.label_tag }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.email }}
+                                {% for error in form.email.errors %}
+                                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div class="row mb-3 d-flex justify-content-around">
+                            <div class="col-md-2 label-col">
+                                {{ form.phone.label_tag }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.phone }}
+                                {% for error in form.phone.errors %}
+                                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div class="row mb-3 d-flex justify-content-around">
+                            <div class="col-md-2 label-col">
+                                {{ form.name.label_tag }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.name }}
+                                {% for error in form.name.errors %}
+                                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div class="row mb-3 d-flex justify-content-around">
+                            <div class="col-md-2 label-col">
+                                {{ form.last_name.label_tag }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.last_name }}
+                                {% for error in form.last_name.errors %}
+                                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-3"></div>
+                <div class="form-group text-center mt-3 col-md-6">
+                    <small>
+                        Нажимая на кнопу "Регистрация", Вы соглашаетесь <br>с <a class="policy-link" href="{% url 'policy' %}">политикой конфиденциальности</a> нашего сайта
+                    </small>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="row col-md-12 mt-3">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success custom-btn-style">Регистрация</button>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
