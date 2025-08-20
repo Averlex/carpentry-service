@@ -1,0 +1,58 @@
+
+.carousel-indicators span{
+    color: #dee2e6 !important;
+}
+
+.carousel-inner p, h1 {
+    color: #dee2e6 !important;
+}
+
+.custom-btn-style {
+    border: none !important;
+    text-align: center;
+    border-radius: 4px !important;  /* Rounded corners */
+    background-color: #54947b !important;  /* Button background color */
+    color: #dee2e6 !important;  /* Button text/icon color */
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;  /* Add a subtle shadow */
+    cursor: pointer;  /* Change cursor to pointer */
+    width: 220px !important;
+  }
+
+.custom-btn-style:hover {
+    background-color: #4e8670 !important;  /* Hover background color */
+    color: #dee2e6b3 !important;  /* Hover text/icon color */
+  }
+
+/* Style for carousel control buttons */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: brightness(0) saturate(100%) invert(87%) sepia(9%) saturate(45%) hue-rotate(176deg) brightness(96%) contrast(92%) !important;
+}
+
+.carousel-control-prev-icon:hover,
+.carousel-control-next-icon:hover {
+    filter: brightness(0) saturate(100%) invert(87%) sepia(9%) saturate(45%) hue-rotate(176deg) brightness(100%) contrast(100%) !important;
+}
+
+.carousel-indicators button {
+    background-color: #dee2e6b3 !important;
+}
+
+.carousel-indicators button:hover,
+.carousel-indicators .active {
+    background-color: #dee2e6 !important;
+}
+
+.carousel-inner img {
+    width: fit-content !important;
+    height: auto !important;
+}
+
+@media (min-width: 2122px) {
+    .carousel-inner img {
+        width: 100% !important;
+        height: auto !important;
+    
+    }
+}

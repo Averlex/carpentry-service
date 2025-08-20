@@ -1,0 +1,659 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/css/order.css' %}">
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var currentStep = 1;
+        var totalSteps = $('.form-step').length;
+        var rowData = {};
+        var orderDetails = {};
+
+        
+        // Function to update overall price based on form data
+        function updateOverallPrice() {
+            var totalPrice = 0;
+
+            // Sum up prices of each product
+            $('.form-row').each(function () {
+                var price = parseFloat($(this).find('[id*="price"]').val()) || 0;
+                totalPrice += price;
+            });
+
+            totalPrice += parseFloat($('.details-group').find('[id*="price"]').val()) || 0;
+
+            // Display the overall price
+            $('.overall-price div').each( function () {
+                $(this).text(totalPrice.toFixed(2));
+            });
+        }
+
+        // Initial
+        updateOverallPrice();
+
+        // Calculate overall price on formset input change
+        $('.form-step input, select').change(function (e) {
+            updateOverallPrice();
+        });
+
+        function updateButtons(step) {
+            // Hide/show buttons based on the current step
+            if (step == 1) {
+                $('#prev-step-2').hide();
+                $('#next-step-1').show();
+            } else if (step == 2) {
+                $('#prev-step-2').show();
+                $('#next-step-1').hide();
+                $('#next-step-2').show();
+            } else if (step == totalSteps) {
+                $('#prev-step-2').show();
+                $('#next-step-2').hide();
+            }
+        }
+
+        // Function to show the current step
+        function showStep(step) {
+            $('.form-step').addClass('visually-hidden');
+            $('#step-' + step).removeClass('visually-hidden');
+            updateButtons(step);
+        }
+
+         // Step button click handler
+         $(document).on('click', '.btn-step-inc', function (e) {
+            e.preventDefault();
+
+            if (currentStep === 2) {
+
+                var formData = {};
+                var orderDetails = {};
+
+            // Iterate through each form row
+            $('.form-row').each(function(index) {
+                var rowData = {};
+                
+                rowData['material'] = $(this).find('select[name$="-material"] option:selected').text();
+                rowData['length'] = $(this).find('input[name$="-length"]').val();
+                rowData['handles'] = $(this).find('input[name$="-handles"]').is(':checked');
+                rowData['number'] = $(this).find('input[name$="-number"]').val();
+                rowData['use_type'] = $(this).find('select[name$="-use_type"] option:selected').text();
+                rowData['width'] = $(this).find('input[name$="-width"]').val();
+                rowData['legs'] = $(this).find('input[name$="-legs"]').is(':checked');
+                rowData['height'] = $(this).find('input[name$="-height"]').val();
+                rowData['groove'] = $(this).find('input[name$="-groove"]').is(':checked');
+                rowData['price'] = $(this).find('input[name$="-price"]').val();
+
+                formData['form_' + index] = rowData;
+            });
+
+            orderDetails['delivery_type'] = $('select[id*="delivery_type"] option:selected').text();
+            orderDetails['delivery_price'] = $('input[id*="delivery_price"]').val();
+            orderDetails['description'] = $('textarea[id*="description"]').val();
+            orderDetails['address'] = $('textarea[id*="address"]').val();
+            orderDetails['delivery_description'] = $('textarea[id*="delivery_description"]').val();
+
+        // Populate table on step 3
+        var tableBody = $('#step-3 .table tbody');
+        tableBody.empty();
+
+        var rowIndex = 1;
+        $.each(formData, function(index, data) {
+            var handlesChecked = data['handles'] ? 'checked' : '';
+            var legsChecked = data['legs'] ? 'checked' : '';
+            var grooveChecked = data['groove'] ? 'checked' : '';
+
+            var rowHtml = `
+                <tr>
+                    <th scope="row">${rowIndex}</th>
+                    <td>${data['use_type']}</td>
+                    <td class="text-muted">${data['material']}</td>
+                    <td class="text-muted">${data['length']} мм × ${data['width']} мм × ${data['height']} мм</td>
+                    <td class="text-muted"><input class="form-check-input" type="checkbox" ${handlesChecked} disabled></td>
+                    <td class="text-muted"><input class="form-check-input" type="checkbox" ${legsChecked} disabled></td>
+                    <td class="text-muted"><input class="form-check-input" type="checkbox" ${grooveChecked} disabled></td>
+                    <td class="text-muted">${data['number']} шт.</td>
+                    <td><b>${data['price']} ₽</b></td>
+                </tr>
+            `;
+            tableBody.append(rowHtml);
+            rowIndex++;
+        });
+
+        // Add delivery row
+        if (orderDetails['delivery_type'] === 'СДЭК') {
+            var deliveryRowHtml = `
+                <tr>
+                    <th scope="row"></th>
+                    <td id="delivery-tag">Доставка</td>
+                    <td class="text-muted"></td>
+                    <td class="text-muted"></td>
+                    <td class="text-muted"></td>
+                    <td class="text-muted"></td>
+                    <td class="text-muted"></td>
+                    <td class="text-muted">1 шт.</td>
+                    <td><b>${orderDetails['delivery_price']} ₽</b></td>
+                </tr>
+            `;
+            tableBody.append(deliveryRowHtml);
+
+            
+        }
+
+        // Generate and display delivery details section
+        var deliveryDetailsContainer = $('#step-3 .delivery-details');
+        deliveryDetailsContainer.empty();
+
+        function checkDescription(description) {
+            if (typeof description === 'undefined' || description === '') {
+                return 'Не указан';
+            }
+            else {
+                return description;
+            }
+        }
+
+        var addressToShow = checkDescription(orderDetails['address']);
+        var descriptionToShow = checkDescription(orderDetails['description']);
+        var deliveryDescriptionToShow = checkDescription(orderDetails['delivery_description']);
+
+        
+        var deliveryDetailsHtml = `
+        <div class="col-md-12">
+            <div class="order-details">               
+                <div class="row mb-3">
+                    <div class="col-md-3 flex d-flex justify-content-start details-group static align-items-center"><b>{{ order_form.delivery_type.label_tag }}</b></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4 details-group static"><b>{{ order_form.address.label_tag }}</b></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-3 flex d-flex justify-content-start details-group static align-items-center"><b>{{ order_form.delivery_price.label_tag }}</b></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 flex d-flex justify-content-start details-group static align-items-center text-muted">${orderDetails['delivery_type']}</div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4 details-group dynamic text-muted">${addressToShow}</div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-3 flex d-flex justify-content-start details-group static delivery-price align-items-center text-muted"><b>${orderDetails['delivery_price']} ₽</b></div>
+                </div>
+                <hr>
+                <div class="row mb-3 pt-3">
+                    <div class="col-md-5 details-group static"><b>{{ order_form.description.label_tag }}</b></div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-5 details-group dynamic"><b>{{ order_form.delivery_description.label_tag }}</b></div>
+                </div>
+                <div class="row mb-3 pb-3">
+                    <div class="col-md-5 text-muted">${descriptionToShow}</div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-5 details-group dynamic text-muted">${deliveryDescriptionToShow}</div>
+                </div>
+            </div>
+        </div>
+        `;
+        deliveryDetailsContainer.append(deliveryDetailsHtml);
+
+            }
+
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+
+        });
+
+        $(document).on('click', '.btn-step-dec', function (e) {
+            e.preventDefault();
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+
+        // Number field processing
+        $(document).on('change', '[id*="number"]', function (e) {
+            var currentValue = $(this).val();
+
+            if ($(this).val() < 1) {
+                $(this).val($(this).data('prevValue'));
+            }
+            else if ($(this).val() > 99) {
+                $(this).val($(this).data('prevValue'));
+            }
+            else {
+                $(this).data('prevValue', currentValue);
+            }
+        });
+
+        // Initial setup
+        showStep(currentStep);
+
+        // Function to update element indices
+        function updateElementIndex(el, prefix, ndx) {
+            var id_regex = new RegExp('(' + prefix + '-\\d+)');
+            var replacement = prefix + '-' + ndx;
+            if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+            if (el.id) el.id = el.id.replace(id_regex, replacement);
+            if (el.name) el.name = el.name.replace(id_regex, replacement);
+        }
+
+        // Function to clone formset elements
+        function cloneMore(selector, prefix) {
+            var newElement = $(selector).clone(true, true);
+            var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+
+            $(newElement).find(':input').each(function () {
+                updateElementIndex(this, prefix, total);
+            });
+            $(newElement).find('label').each(function () {
+                updateElementIndex(this, prefix, total);
+            });
+
+            total++;
+            $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+            $(selector).before(newElement);
+
+            updateOverallPrice();
+
+            return false;
+        }
+
+        // Function to delete formset elements
+        function deleteForm(prefix, btn) {
+            var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+
+            if (total != 1) {
+                $('#id_' + prefix + '-TOTAL_FORMS').val(total - 1);
+                btn.closest('.form-row').remove();
+                var forms = $('.form-row');
+                for (var i = 0; i < forms.length; i++) {
+                    $(forms.get(i)).find(':input').each(function () {
+                        updateElementIndex(this, prefix, i);
+                    });
+                    $(forms.get(i)).find('label').each(function () {
+                        updateElementIndex(this, prefix, i);
+                    });
+                }
+            }
+
+            updateOverallPrice();
+
+            return false;
+        }
+
+        $(document).on('click', '.btn-increment', function(e) {
+            e.preventDefault();
+            // Find the input field related to this button
+            var inputField = $(this).closest('.row').find('[id*="number"]');
+
+            // Get the current value and increment it
+            var currentValue = parseInt(inputField.val()) || 0;
+            var newValue = currentValue + 1;
+
+            if (newValue <= 99) {
+                // Update the input field with the new value
+                inputField.val(newValue);
+
+                // Trigger change event to update any related functionality
+                inputField.trigger('change');
+            }
+        });
+
+        $(document).on('click', '.btn-decrement', function(e) {
+            e.preventDefault();
+            // Find the input field related to this button
+            var inputField = $(this).closest('.row').find('[id*="number"]');
+
+            // Get the current value and decrement it
+            var currentValue = parseInt(inputField.val()) || 0;
+            var newValue = currentValue - 1;
+
+            if (newValue > 0) {
+                // Update the input field with the new value
+                inputField.val(newValue);
+
+                // Trigger change event to update any related functionality
+                inputField.trigger('change');
+            }
+        });
+
+        // Clone formset elements on button click
+        $(document).on('click', '.add-form-row', function (e) {
+            e.preventDefault();
+            cloneMore('#formset-container .form-row:first', 'form');
+            return false;
+        });
+
+        // Delete formset elements on button click
+        $(document).on('click', '.remove-form-row', function (e) {
+            e.preventDefault();
+            deleteForm('form', $(this));
+            return false;
+        });
+
+        // Calculate overall price on formset input change
+        $('#formset-container select, #formset-container input').change(function (e) {
+            $.ajax({
+                type: 'POST',
+                url: '/order/',
+                data: {
+                    material: $(e.target).closest('.form-row').find('[id*="material"]').val(),
+                    length: $(e.target).closest('.form-row').find('[id*="length"]').val(),
+                    width: $(e.target).closest('.form-row').find('[id*="width"]').val(),
+                    height: $(e.target).closest('.form-row').find('[id*="height"]').val(),
+                    handles: $(e.target).closest('.form-row').find('[id*="handles"]').is(':checked'),
+                    legs: $(e.target).closest('.form-row').find('[id*="legs"]').is(':checked'),
+                    groove: $(e.target).closest('.form-row').find('[id*="groove"]').is(':checked'),
+                    number: $(e.target).closest('.form-row').find('[id*="number"]').val(),
+                    price: $(e.target).closest('.form-row').find('[id*="price"]').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                dataType: 'json',
+                success: function (responseData) {
+                    $(e.target).closest('.form-row').find('[id*=price]').val(responseData.text);
+                    updateOverallPrice();
+                },
+            });
+        });
+
+        // Delivery price
+        $('.order-details select').change(function (e) {
+            $.ajax({
+                type: 'POST',
+                url: '/order/',
+                data: {
+                    delivery_type: $(this).val(),
+                    address: $(e.target).closest('.order-details').find('[id*="address"]').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                dataType: 'json',
+                success: function (responseData) {
+                    $(e.target).closest('.order-details').find('[id*=delivery_price]').val(responseData.text);
+                    updateOverallPrice();
+                },
+            });
+        });
+
+        // Toggle ` fields based on delivery type selection
+        // $('[id*="delivery_type"]').change(function () {
+        //     if ($(this).val() === '0') {
+        //         $('.dynamic').slideUp();
+        //     } else {
+        //         $('.dynamic').slideDown();
+        //     }
+        // });
+
+
+        // Initial
+        // if ($('[id*="delivery_type"]').val() === '0') {
+        //     $('.dynamic').slideUp();
+        // }
+
+        // Handle form submission
+        $('#order-form').submit(function (e) {
+            e.preventDefault();
+            $(this).find('[name*="price"]').prop('disabled', false);
+            var dataToSend = $(this).serialize();
+            $(this).find('[name*="price"]').prop('disabled', true);
+            $.ajax({
+                type: 'POST',
+                url: '/order/',
+                data: dataToSend,
+                context: this,
+                dataType: 'json',
+                success: function (responseData) {
+                    $(this).closest('.form-outer').addClass('visually-hidden');
+                    $('.message-prefix').html(responseData.message_prefix);
+                    $('.message-body').html(responseData.message_body + responseData.order_id);
+                    $('.message-suffix').html(responseData.message_suffix);
+                    $('.post-message').removeClass('visually-hidden');
+                },
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container">
+    <div class="form-outer">
+        <div class="header">
+            <h2 class="mt-3 my-3">Оформите заказ прямо сейчас и ...</h2>
+        </div>
+
+        <form id="order-form" method="POST" action="">
+            {% csrf_token %}
+
+            <!-- Step 1: Конфигурация товаров -->
+            <div id="step-1" class="form-step">
+                <div class="row mb-3 my-3">
+                    <div class="col-md-2"></div>
+                    <h3 class="col-md-8 d-flex justify-content-center">#1: Конфигурация товаров</h3>
+                    <div class="overall-price col-2 text-end d-flex justify-content-end align-items-center">
+                        <div class="step-overall-price"></div><i class="fa-solid fa-ruble-sign fa-2x"></i>
+                    </div>
+                </div>
+
+                {{ formset.management_form }}
+                <div id="formset-container">
+                    <div class="row">
+                        <div class="col-md-2"><button class="btn btn-success add-form-row custom-btn-style">Добавить товар</button></div>
+                        <div class="col-md-8"></div>
+                        <div class="step-navigation col-md-2 d-flex justify-content-between">
+                            <div class="col-md"></div>
+                            <div class="col-md d-flex justify-content-end"><button id="next-step-1" class="btn btn-success btn-step btn-step-inc" type="button">Далее</button></div>
+                        </div>
+                    </div>
+                    {% for form in formset %}
+                    <div class="form-row card my-3 py-3 px-3">
+                            <!-- Общие характеристики -->
+                            <div class="form-section py-3">
+
+                                <div class="row my-3">
+                                    <div class="col-md-1 label-col">{{ form.material.label_tag }}</div>
+                                    <div class="col-md-2 select-col">{{ form.material }}</div>
+
+                                    <div class="col-md-2 label-col">{{ form.length.label_tag }}</div>
+                                    <div class="col-md-1 size-col">{{ form.length }}</div>
+
+                                    <div class="col-md-2 label-col">{{ form.handles.label_tag }}</div>
+                                    <div class="col-md-1 checkbox-col">{{ form.handles }}</div>
+
+                                    <div class="col-md-2 number-col flex d-flex justify-content-around">
+                                        <button type="button" class="btn-decrement">-</button>
+                                        {{ form.number }}
+                                        <button type="button" class="btn-increment">+</button>
+                                    </div>
+                                    <div class="col-md-1 trash-col flex d-flex justify-content-around">
+                                        <button type="button" class="remove-form-row mx-3"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div>
+                                
+
+                                <div class="row mb-3">
+                                    <div class="col-md-1 label-col">{{ form.use_type.label_tag }}</div>
+                                    <div class="col-md-2 select-col">{{ form.use_type }}</div>
+
+                                    <div class="col-md-2 label-col">{{ form.width.label_tag }}</div>
+                                    <div class="col-md-1 size-col">{{ form.width }}</div>
+
+                                    <div class="col-md-2 label-col">{{ form.legs.label_tag }}</div>
+                                    <div class="col-md-1 checkbox-col">{{ form.legs }}</div>
+
+                                    <div class="col-md-3"></div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-3"></div>
+
+                                    <div class="col-md-2 label-col">{{ form.height.label_tag }}</div>
+                                    <div class="col-md-1 size-col">{{ form.height }}</div>
+
+                                    <div class="col-md-2 label-col">{{ form.groove.label_tag }}</div>
+                                    <div class="col-md-1 checkbox-col">{{ form.groove }}</div>
+                                    
+                                    <div class="col-md-1 flex d-flex justify-content-around prod-price align-items-center">{{ form.price }}<i class="fa-solid fa-ruble-sign fa-lg"></i></div>
+
+                                    <div class="col-md-1"></div>
+
+                                    <div class="col-md-1"></div>
+                                    
+                                </div>
+
+                            </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Step 2: Детали доставки -->
+            <div id="step-2" class="form-step visually-hidden">
+                <div class="row mb-3 my-3">
+                    <div class="col-md-2"></div>
+                    <h3 class="col-md-8 d-flex justify-content-center">#2: Уточнение деталей</h3>
+                    <div class="overall-price col-2 text-end d-flex justify-content-end align-items-center">
+                        <div class="step-overall-price"></div><i class="fa-solid fa-ruble-sign fa-2x"></i>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-10"></div>
+                    <div class="step-navigation col-md-2 d-flex justify-content-between">
+                        <div class="col-md d-flex justify-content-end"><button id="prev-step-2" class="btn btn-success btn-step btn-step-dec" type="button">Назад</button></div>
+                        <div class="col-md d-flex justify-content-end"><button id="next-step-2" class="btn btn-success btn-step btn-step-inc" type="button">Далее</button></div>
+                    </div>
+                </div>
+                <div class="card my-3 py-3 px-3">
+                    <div class="form-section py-3">
+                <div class="order-details">               
+                    <div class="row mb-3">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4 flex d-flex justify-content-start details-group static align-items-center">{{ order_form.delivery_type.label_tag }}</div>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3 flex d-flex justify-content-start details-group static align-items-center">{{ order_form.delivery_price.label_tag }}</div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-4 flex d-flex justify-content-start details-group static align-items-center">{{ order_form.delivery_type }}</div>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3 flex d-flex justify-content-start details-group static delivery-price align-items-center">{{ order_form.delivery_price }}<i class="fa-solid fa-ruble-sign fa-lg"></i></div>
+                        <div class="col-md-1"></div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3 details-group static">{{ order_form.description.label_tag }}</div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2 details-group dynamic">{{ order_form.address.label_tag }}</div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3 details-group dynamic">{{ order_form.delivery_description.label_tag }}</div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3">{{ order_form.description }}</div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2 details-group dynamic">{{ order_form.address }}</div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3 details-group dynamic">{{ order_form.delivery_description }}</div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+                    </div>
+                    </div>
+            </div>
+
+            <!-- Step 3: Подтверждение -->
+            <div id="step-3" class="form-step visually-hidden">
+                <div class="row mb-3 my-3">
+                    <div class="col-md-2"></div>
+                    <h3 class="col-md-8 d-flex justify-content-center">#3: Подтверждение заказа</h3>
+                    <div class="overall-price col-2 text-end d-flex justify-content-end align-items-center">
+                        <div class="step-overall-price"></div><i class="fa-solid fa-ruble-sign fa-2x"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10"></div>
+                    <div class="step-navigation col-md-2 d-flex justify-content-between">
+                        <div class="col-md d-flex justify-content-end"><button id="prev-step-3" class="btn btn-success btn-step btn-step-dec" type="button">Назад</button></div>
+                        <div class="col-md"></div>
+                    </div>
+                </div>
+                <div class="card my-3 py-3 px-3">
+                    <div class="form-section pt-3">
+                        <div class="products container">
+                        <span id="sub-title" class="row">
+                            <p><b>Состав заказа</b></p>
+                        </span>
+                        <table class="table table-hover bg-primary">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Тип предмета</th>
+                                    <th scope="col">Материал</th>
+                                    <th scope="col">Размеры</th>
+                                    <th scope="col">Ручки</th>
+                                    <th scope="col">Ножки</th>
+                                    <th scope="col">Дренажный канал</th>
+                                    <th scope="col">Количество</th>
+                                    <th scope="col">Стоимость</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="delivery-details container">
+
+                    </div>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-2"><button type="submit" class="btn btn-success custom-btn-style">Оформить заказ</button></div>
+                    <div class="col-md-5"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Success Message -->
+    <div id="success-msg" class="form-step post-message visually-hidden">
+        <div class="row mb-3 my-3">
+            <div class="col-md-2"></div>
+            <h3 class="col-md-8 d-flex justify-content-center message-prefix"></h3>
+            <div class="overall-price col-2 text-end d-flex justify-content-end align-items-center"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-10"></div>
+            <div class="step-navigation col-md-2 d-flex justify-content-between">
+                <div class="col-md d-flex justify-content-end"></div>
+                <div class="col-md"></div>
+            </div>
+        </div>
+        <div class="card my-3 py-3 px-3">
+            <div class="form-section pt-3">
+                <div class="container">
+                <span id="sub-title" class="row">
+                    <b><p class="message-body col-md-12 d-flex justify-content-center align-items-center"></p></b>
+                </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4"><p class="message-suffix"></p></div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}
+
+{% block externals %}
+{% endblock %}

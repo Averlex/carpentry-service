@@ -1,0 +1,216 @@
+/* General styling adjustments */
+
+.form-section {
+    margin-bottom: 20px; /* Add margin between form sections */
+}
+
+.form-table {
+    width: 100%; /* Ensure tables expand to full width */
+}
+
+
+/* Font Awesome icons */
+.fa {
+    font-family: "Font Awesome 5 Free";
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .col-8, .col-4 {
+        width: 100%; /* Full width on smaller screens */
+    }
+}
+
+input, select, textarea {
+    box-sizing: border-box;
+    padding: 8px; /* Adjust padding as needed */
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    border: 1px solid #495057; /* Dark border color */
+    outline: none;
+    background-color: #343a40; /* Dark background color */
+    color: #ffffff; /* Light text color */
+  }
+  
+  /* Optional: Customize appearance */
+  input, textarea {
+    border-radius: 4px; /* Rounded corners for input */
+  }
+
+  textarea {
+    width: auto;
+    height: 5em;
+    resize: none;
+  }
+
+  #id_address {
+    width: 15em;
+  }
+
+  select {
+    appearance: none; /* Removes default arrow */
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8" width="8" height="8"><polygon fill="%23ffffff" points="0,0 8,0 4,4"/></svg>'); /* Custom arrow icon, white color */
+    background-repeat: no-repeat;
+    background-position: right 8px center; /* Position arrow on the right */
+    padding-right: 24px; /* Adjust as needed to accommodate arrow */
+    border-radius: 4px; /* Rounded corners for select */
+  }
+  
+  /* Optional: Hover and focus styles */
+  input:hover, input:focus, select:hover, select:focus, textarea:hover, textarea:focus {
+    border-color: #ffffff; /* Light border color on hover/focus */
+  }
+  
+  /* Custom checkbox styles */
+  input[type="checkbox"] {
+    -webkit-appearance: none; /* Remove default styling */
+    appearance: none; /* Remove default styling */
+    width: 16px;
+    height: 16px;
+    border: 1px solid #495057; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #343a40; /* Background color */
+    cursor: pointer; /* Change cursor to pointer */
+    position: relative;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: #54947b; /* Checked background color */
+    border-color: #54947b; /* Checked border color */
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 5px;
+    height: 9px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+
+select {
+    width: 12em;
+  }
+
+  .label-col {
+    text-align: right;
+  }
+
+  .size-col input {
+    width: 8em;
+  }
+
+
+  /* Hide the number input arrows */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.number-col input {
+    width: 3em;
+}
+
+.number-col button, .trash-col button {
+    text-align: center !important;
+    width: 2em !important;
+    height: 2em !important;
+    color: #dee2e6 !important;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s !important;;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; 
+    cursor: pointer;  
+    border-radius: 4px !important;
+}
+
+.number-col, .trash-col {
+    align-items: center;
+}
+
+.btn-decrement, .remove-form-row {
+    border-color: #d85c75c3 !important;
+    background-color: #d85c75c3 !important;
+}
+
+.btn-decrement:hover, 
+.remove-form-row:hover {
+    background-color: #bd465ec3 !important;
+    color: #dee2e6b3 !important;
+}
+
+.btn-increment {
+    border-color: #54947b !important;
+    color: #54947b !important;
+    background-color: #54947b !important;
+}
+
+.btn-increment:hover {
+    background: #54947b !important;
+    color: #dee2e6b3 !important;
+}
+
+.custom-btn-style {
+    border: none !important;
+    text-align: center;
+    border-radius: 4px !important;  /* Rounded corners */
+    background-color: #54947b !important;  /* Button background color */
+    color: #dee2e6 !important;  /* Button text/icon color */
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;  /* Add a subtle shadow */
+    cursor: pointer;  /* Change cursor to pointer */
+  }
+
+.custom-btn-style:hover {
+    background-color: #4e8670 !important;  /* Hover background color */
+    color: #dee2e6b3 !important;  /* Hover text/icon color */
+  }
+
+
+.prod-price input, .delivery-price input{
+    border: none !important;
+    background: none !important;
+    color: #dee2e6 !important;
+    width: 6em;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Font Awesome 5 Free';
+    font-size:larger;
+}
+
+.prod-price i, .details-group i {
+    size: 3em !important;
+    color: #dee2e6 !important;
+}
+
+.btn-step {
+    border-color: #dee2e6 !important;
+    text-align: center;
+    border-radius: 4px !important;  /* Rounded corners */
+    background-color: transparent !important;  /* Button background color */
+    color: #dee2e6 !important;  /* Button text/icon color */
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Add a subtle shadow */
+    cursor: pointer;  /* Change cursor to pointer */
+}
+
+.btn-step:hover {
+    background-color: #eff4f041 !important;
+    border-color: #eff4f041 !important;
+    color: #54947b !important;
+}
+
+.step-overall-price {
+    border: none !important;
+    background: none !important;
+    color: #dee2e6 !important;
+    width: 6em;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Font Awesome 5 Free';
+    font-size:xx-large;
+}
+  

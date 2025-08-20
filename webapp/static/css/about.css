@@ -1,0 +1,195 @@
+/* General styling for FAQ and Feedback sections */
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.section-heading {
+    font-size: 24px;
+    text-align: center;
+}
+
+.feedback-form {
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.feedback-form .form-label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.feedback-form .rating {
+    display: flex;
+    gap: 10px;
+}
+
+.feedback-form .rating label {
+    font-size: 24px;
+    color: #dee2e6;
+    cursor: pointer;
+}
+
+.feedback-form .btn-custom {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #5b947b;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.feedback-form .btn-custom:hover {
+    background-color: #5b947bbe;
+}
+
+.feedback-message {
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.feedback-message h3,
+.feedback-message p {
+    margin-bottom: 10px;
+    color: #dee2e6;
+}
+
+.login-required {
+    background-color: #ffc107;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.login-required .login-message {
+    font-size: 16px;
+}
+
+.login-required .login-message a {
+    color: #548671;
+    text-decoration: none;
+}
+
+.login-required .login-message a:hover {
+    text-decoration: underline;
+}
+
+/* Center headings */
+.text-center {
+    text-align: center !important;
+}
+
+.accordionContent {
+    padding: 10px 0 !important;
+}
+
+.accordion {
+    color: #dee2e6 !important;
+}
+
+/* Smooth expand/collapse animation */
+.accordionItem {
+    max-height: 0 !important;
+    overflow: hidden !important;
+    transition: max-height 0.3s ease-out !important;
+}
+
+.accordionItem.show {
+    max-height: 1000px !important; /* Adjust as needed, should be higher than maximum content height */
+}
+
+/* Optional: Custom accordion styling */
+.accordion-button {
+    border: none !important;
+    text-align: left !important;
+    padding: 1rem !important;
+    cursor: pointer !important;
+    border-radius: 0.25rem !important;
+    margin-bottom: 1px !important;
+    transition: background-color 0.3s !important;
+    box-shadow: none !important;
+    font-size: large;
+}
+
+.accordion-button:hover {
+    background-color: #dee2e6 !important;
+    color: #212529 !important;
+    text-decoration: solid !important;
+}
+
+.accordion-body {
+    padding: 1rem;
+    border: none !important;
+}
+
+/* Adjustments for the accordion */
+.accordion-button {
+    background-color: transparent !important;
+    color: #dee2e6 !important;
+    border: none !important;
+    text-align: left !important;
+    padding: 1rem !important;
+    cursor: pointer !important;
+    position: relative !important;
+}
+
+.accordion-button:focus {
+    outline: none !important;
+}
+
+.accordion-item.active .accordion-button {
+    background-color: #5b947b !important; /* Background color when expanded */
+    color: #dee2e6 !important; /* Text color when expanded */
+}
+
+.accordion-item {
+    padding: 0 !important;
+}
+
+
+.accordion-button.collapsed i {
+    transform: rotate(0deg) !important; /* Chevron down by default */
+    color: #dee2e6 !important;
+}
+
+.accordion-button:not(.collapsed) i {
+    transform: rotate(180deg) !important; /* Chevron up when expanded */
+    color: #dee2e6 !important;
+    background-color: #5b947b;
+}
+
+.accordion-button::after {
+    color: #dee2e6 !important;
+}
+  
+  .accordion-button:not(.collapsed)::after {
+    color: #dee2e6 !important;
+}
+
+
+textarea {
+    box-sizing: border-box;
+    padding: 8px; /* Adjust padding as needed */
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    border: 1px solid #495057; /* Dark border color */
+    outline: none;
+    background-color: #343a40; /* Dark background color */
+    color: #ffffff; /* Light text color */
+    border-radius: 4px;
+    width: auto;
+    height: 7em;
+    resize: none;
+  }
+
+  .rating label {
+    color: '#dee2e6' !important;
+  }

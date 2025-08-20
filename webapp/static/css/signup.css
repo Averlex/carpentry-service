@@ -1,0 +1,118 @@
+/* General styling adjustments */
+.form-section {
+    margin-bottom: 20px; /* Add margin between form sections */
+}
+
+/* Font Awesome icons */
+.fa {
+    font-family: "Font Awesome 5 Free";
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .col-md-6 {
+        width: 100%; /* Full width on smaller screens */
+    }
+}
+
+input, select, textarea {
+    box-sizing: border-box;
+    padding: 8px; /* Adjust padding as needed */
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    border: 1px solid #495057; /* Dark border color */
+    outline: none;
+    background-color: #343a40; /* Dark background color */
+    color: #ffffff; /* Light text color */
+}
+
+input, textarea {
+    border-radius: 4px; /* Rounded corners for input */
+}
+
+textarea {
+    width: auto;
+    height: 5em;
+    resize: none;
+}
+
+select {
+    appearance: none; /* Removes default arrow */
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8" width="8" height="8"><polygon fill="%23ffffff" points="0,0 8,0 4,4"/></svg>'); /* Custom arrow icon, white color */
+    background-repeat: no-repeat;
+    background-position: right 8px center; /* Position arrow on the right */
+    padding-right: 24px; /* Adjust as needed to accommodate arrow */
+    border-radius: 4px; /* Rounded corners for select */
+}
+
+input:hover, input:focus, select:hover, select:focus, textarea:hover, textarea:focus {
+    border-color: #ffffff; /* Light border color on hover/focus */
+}
+
+/* Custom checkbox styles */
+input[type="checkbox"] {
+    -webkit-appearance: none; /* Remove default styling */
+    appearance: none; /* Remove default styling */
+    width: 16px;
+    height: 16px;
+    border: 1px solid #495057; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #343a40; /* Background color */
+    cursor: pointer; /* Change cursor to pointer */
+    position: relative;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #54947b; /* Checked background color */
+    border-color: #54947b; /* Checked border color */
+}
+
+input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 5px;
+    height: 9px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Custom button styles */
+.custom-btn-style {
+    border: none;
+    text-align: center;
+    border-radius: 4px; /* Rounded corners */
+    background-color: #54947b; /* Button background color */
+    color: #dee2e6; /* Button text/icon color */
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+.custom-btn-style:hover {
+    background-color: #4e8670; /* Hover background color */
+    color: #dee2e6b3; /* Hover text/icon color */
+}
+
+/* Policy link styles */
+.policy-link {
+    color: #17a2b8;
+}
+
+.policy-link:hover {
+    text-decoration: underline;
+}
+
+/* Close button styles */
+.close {
+    float: right;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.5;
+}

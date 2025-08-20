@@ -1,0 +1,64 @@
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex-grow: 1;
+}
+
+.navbar {
+  transition: padding-top 0.3s, padding-bottom 0.3s; /* Smooth transition for padding */
+}
+
+.navbar-brand img.banner {
+  max-height: 50px; /* Adjust height of the banner image */
+  width: auto; /* Allow width to adjust dynamically */
+}
+
+.navbar-nav .nav-link {
+  color: #dee2e6 !important; /* Text color for nav links */
+  transition: color 0.3s; /* Smooth transition for color change */
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ffffff !important; /* Text color on hover */
+}
+
+.navbar-toggler-icon {
+  background-color: #dee2e6; /* Color for toggler icon */
+}
+
+/* Button Styling */
+.btn-outline {
+  color: #dee2e6; /* Text color for outline buttons */
+  border-color: #dee2e6; /* Border color for outline buttons */
+  transition: color 0.3s, border-color 0.3s; /* Smooth transition for color and border */
+}
+
+.btn-outline:hover {
+  color: #ffffff; /* Text color on hover */
+  border-color: #ffffff; /* Border color on hover */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+  .navbar-brand img.banner {
+      max-height: 30px; /* Adjust height for smaller screens */
+  }
+  
+  .navbar-nav.auth-links {
+      margin-left: auto; /* Push auth links to the right */
+  }
+}
+
+/* Adjust SVG image size */
+.navbar-brand img.banner {
+  max-height: 50px !important; /* Adjust the maximum height as needed */
+  width: auto; /* Allow width to adjust dynamically */
+}

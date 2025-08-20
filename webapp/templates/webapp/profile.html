@@ -1,0 +1,467 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block head %}
+<script>
+    $().ready(function() {
+        // Tab functionality
+        $('.nav-tabs').find('button').on('click', function (e) {
+            e.preventDefault();
+            $($(this).attr('data-bs-target')).tab('show');
+        });
+
+        // Accordion functionality
+        const accordionToggles = document.querySelectorAll('.js-accordionTrigger');
+        accordionToggles.forEach(toggle => {
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                const thisAnswer = e.target.parentNode.nextElementSibling;
+                const thisQuestion = e.target;
+                const expanded = thisAnswer.classList.contains('is-collapsed') ? 'true' : 'false';
+
+                thisQuestion.setAttribute('aria-expanded', expanded);
+                thisAnswer.setAttribute('aria-hidden', expanded === 'true' ? 'false' : 'true');
+
+                thisQuestion.classList.toggle('is-collapsed');
+                thisQuestion.classList.toggle('is-expanded');
+                thisAnswer.classList.toggle('is-collapsed');
+                thisAnswer.classList.toggle('is-expanded');
+                thisAnswer.classList.toggle('animateIn');
+            });
+        });
+
+        // Profile editing functionality
+        $('.card-body .row #edit-button').prop('hidden', false);
+        $('.card-body .row #save-edit-button').prop('hidden', true);
+
+        $('.card-body .row #edit-button').click(function (e) {
+            const target = $(e.target).closest('.row').find('input, select');
+            target.prop('disabled', false);
+            $(this).siblings('#save-edit-button').prop('hidden', false);
+            $(this).prop('hidden', true);
+        });
+
+        $('.card-body .row #save-edit-button').click(function (e) {
+            const $button = $(this);
+            const target = $(e.target).closest('.row').find('input, select');
+            const name = target.attr('id').slice(3);
+            const val = target.val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/profile/',
+                data: {
+                    [name]: val,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                dataType: 'json',
+                success: function(responseData) {
+                    target.prop('disabled', true);
+                    target.val(responseData['form'][name].initial);
+                    $button.siblings('#edit-button').prop('hidden', false);
+                    $button.prop('hidden', true);
+                },
+            });
+        });
+    });
+</script>
+
+<link rel="stylesheet" href="{% static '/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<ul class="nav nav-tabs py-3" id="tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
+            role="tab" aria-controls="profile" aria-selected="true">Профиль</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab"
+            aria-controls="orders" aria-selected="false">Заказы</button>
+    </li>
+</ul>
+<div class="tab-content my-2 py-1" id="tabsContent">
+    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <div class="container">
+            <div class="main-body">
+                  <!-- /Breadcrumb -->
+            
+                  <div class="row gutters-sm">
+                    <div class="col-md-4 mb-3">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="d-flex flex-column align-items-center text-center">
+                            <i class='far fa-address-card' style='font-size:150px'></i>
+                            <div class="mt-3">
+                              <h4>{{ user.username }}</h4>
+                              <p class="text-secondary mb-1">{{user.get_user_group_display}}</p>
+                              <p class="text-muted font-size-sm">Наш почетный клиент с {{ user.registration_date }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                          <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                            <h6 class="mb-0 pl-2"><i class="fa-solid fa-cart-shopping"></i>&ensp;&ensp;Сделано заказов:</h6>
+                            <span class="text-secondary">{{ total_orders }}</span>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                            <h6 class="mb-0 pl-2"><i class="fa-solid fa-clipboard-list"></i>&ensp;&ensp;Заказано товаров:</h6>
+                            <span class="text-secondary">{{ total_products }}</span>
+                          </li>
+                          <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                            <h6 class="mb-0 pl-2"><i class="fa-solid fa-screwdriver-wrench"></i>&ensp;&ensp;Заказов в работе:</h6>
+                            <span class="text-secondary">{{ orders_in_progress }}</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card mb-3">
+                        <form method="POST">
+                            {% csrf_token %}
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <h6 class="mb-0">Фамилия</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{ form.last_name }}
+                            </div>
+                            <div class="col-sm-1 text-secondary">
+                                <button class="new-action-button" type="button" id="edit-button"><i class="fas fa-edit"></i></button>
+                                <button class="new-action-button" type="button" id="save-edit-button"><i class="fa-solid fa-check me-3"></i></button>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <h6 class="mb-0">Имя</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{ form.name }}
+                            </div>
+                            <div class="col-sm-1 text-secondary">
+                                <button class="new-action-button" type="button" id="edit-button"><i class="fas fa-edit"></i></button>
+                                <button class="new-action-button" type="button" id="save-edit-button"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <h6 class="mb-0">Отчество</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{ form.second_name }}
+                            </div>
+                            <div class="col-sm-1 text-secondary">
+                                <button class="new-action-button" type="button" id="edit-button"><i class="fas fa-edit"></i></button>
+                                <button class="new-action-button" type="button" id="save-edit-button"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <h6 class="mb-0">Email</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{ form.email }}
+                            </div>
+                            <div class="col-sm-1 text-secondary">
+                                <button class="new-action-button" type="button" id="edit-button"><i class="fas fa-edit"></i></button>
+                                <button class="new-action-button" type="button" id="save-edit-button"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <h6 class="mb-0">Телефон</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{ form.phone }}
+                            </div>
+                            <div class="col-sm-1 text-secondary">
+                                <button class="new-action-button" type="button" id="edit-button"><i class="fas fa-edit"></i></button>
+                                <button class="new-action-button" type="button" id="save-edit-button"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <h6 class="mb-0">Адрес</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{ form.main_address }}
+                            </div>
+                            <div class="col-sm-1 text-secondary">
+                                <button class="new-action-button" type="button" id="edit-button"><i class="fas fa-edit"></i></button>
+                                <button class="new-action-button" type="button" id="save-edit-button"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <h6 class="mb-0">День рождения</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{ form.birthdate }}
+                            </div>
+                            <div class="col-sm-1 text-secondary">
+                                <button class="new-action-button" type="button" id="edit-button"><i class="fas fa-edit"></i></button>
+                                <button class="new-action-button" type="button" id="save-edit-button"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                            
+                          </div>
+                          <hr>
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <h6 class="mb-0">Предпочитаемый способ доставки</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{ form.pref_delivery_type }}
+                            </div>
+                            <div class="col-sm-1 text-secondary">
+                                <button class="new-action-button" type="button" id="edit-button"><i class="fas fa-edit"></i></button>
+                                <button class="new-action-button" type="button" id="save-edit-button"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                          </div>
+                        </div>
+                    </form>
+                      </div>    
+                    </div>
+                  </div>
+        
+                </div>
+            </div>
+    </div>
+    <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+        <div class="container">
+            <div class="header my-2 py-1">  
+                <h2>История заказов</h2>
+            </div>
+            {% if not orders %}
+            <span id="sub-title text-center">
+                <p class="text-muted text-center"><strong>Ваша история заказов пуста </strong><i class="fa fa-face-sad-tear"></i></p>
+                <p class="text-muted text-center"><strong><a href="{% url 'order' %}" class="text-body-secondary"
+                            style="text-decoration: none;">Оформите заказ</a></strong> и начните свою историю прямо сейчас!</p>
+            </span>
+            {% else %}
+            <div class="accordion">
+                <dl>
+                    {% for item in orders %}
+                    <dt>
+                        <a href="#order{{ forloop.counter }}" aria-expanded="false"
+                            aria-controls="order{{ forloop.counter }}"
+                            class="accordion-title accordionTitle js-accordionTrigger">
+                            <div class="d-flex flex-row">
+                                <div class="col-1 caption">{{ forloop.counter }}.</div>
+                                <div class="col-4 caption">{{ item.order.order_id }}</div>
+                                <div class="col-2 caption">от {{ item.order.registration_date }}</div>
+                                <div class="col-2 caption">{{ item.order.get_status_display }}</div>
+                                <div class="col-2 caption">{{ item.order.price }} ₽</div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="accordionItem is-collapsed container" id="order{{ forloop.counter }}" aria-hidden="true">
+                        <div class="main accordionContent container">
+                            <div class="mt-4 py-1 container">
+                                <h5>Детали заказа {{ item.order.order_id }}</h5>
+                            </div>
+                            
+                            <div class="tracker container">
+                                <hr>
+                                <span id="sub-title">
+                                    <p><b>Статус заказа</b></p>
+                                </span>
+                                <div class="track">
+                                    <div class="step active"> <span class="icon"> <i class="fa-solid fa-clipboard"></i> </span> <span class="text">Новый заказ</span> </div>
+                                    {% if item.order.status >= 1 %}
+                                        <div class="step active"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text">На уточнении</span> </div>
+                                    {% else %}
+                                        <div class="step"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text">На уточнении</span> </div>
+                                    {% endif %}
+                                    {% if item.order.status >= 2 %}
+                                        <div class="step active"> <span class="icon"> <i class="far fa-credit-card"></i> </span> <span class="text">Ожидает оплаты</span> </div>
+                                    {% else %}
+                                        <div class="step"> <span class="icon"> <i class="far fa-credit-card"></i> </span> <span class="text">Ожидает оплаты</span> </div>
+                                    {% endif %}
+                                    {% if item.order.status >= 3 %}
+                                        <div class="step active"> <span class="icon"> <i class="fas fa-tools"></i> </span> <span class="text">В работе</span> </div>
+                                    {% else %}
+                                        <div class="step"> <span class="icon"> <i class="fas fa-tools"></i> </span> <span class="text">В работе</span> </div>
+                                    {% endif %}
+                                    {% if item.order.status >= 4 %}
+                                        <div class="step active"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Передается в доставку</span> </div>
+                                    {% else %}
+                                        <div class="step"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Передается в доставку</span> </div>
+                                    {% endif %}
+                                    {% if item.order.status >= 5 %}
+                                        <div class="step active"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text">В доставке</span> </div>
+                                    {% else %}
+                                        <div class="step"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text">В доставке</span> </div>
+                                    {% endif %}
+                                    {% if item.order.status >= 6 %}
+                                        <div class="step active"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Завершен</span> </div>
+                                    {% else %}
+                                        <div class="step"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Завершен</span> </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="products container">
+                                <hr>
+                                <span id="sub-title">
+                                    <p><b>Состав заказа</b></p>
+                                </span>
+                                <table class="table table-hover bg-primary">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Тип предмета</th>
+                                            <th scope="col">Материал</th>
+                                            <th scope="col">Размеры</th>
+                                            <th scope="col">Ручки</th>
+                                            <th scope="col">Ножки</th>
+                                            <th scope="col">Дренажный канал</th>
+                                            <th scope="col">Количество</th>
+                                            <th scope="col">Цена (за шт.)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in item.products %}
+                                        <tr>
+                                            <th scope="row">{{ forloop.counter }}</th>
+                                            <td>{{ product.product.get_use_type_display }}</td>
+                                            <td class="text-muted">{{ product.product.get_material_display }}</td>
+                                            <td class="text-muted">{{ product.product.length }} мм × {{product.product.width }} мм × {{ product.product.height }} мм</td>
+                                            {% if product.product.handles %}
+                                            <td class="text-muted"><input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault" checked disabled></td>
+                                            {% else %}
+                                            <td class="text-muted"><input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault" disabled></td>
+                                            {% endif %}
+                                            {% if product.product.legs %}
+                                            <td class="text-muted"><input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault" checked disabled></td>
+                                            {% else %}
+                                            <td class="text-muted"><input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault" disabled></td>
+                                            {% endif %}
+                                            {% if product.product.groove %}
+                                            <td class="text-muted"><input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault" checked disabled></td>
+                                            {% else %}
+                                            <td class="text-muted"><input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault" disabled></td>
+                                            {% endif %}
+                                            <td class="text-muted">{{ product.number }} шт.</td>
+                                            <td><b>{{ product.product.price }} ₽</b></td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% if item.order.delivery %}
+                                        <tr>
+                                            <th scope="row"></th>
+                                            <td>Доставка</td>
+                                            <td class="text-muted"></td>
+                                            <td class="text-muted"></td>
+                                            <td class="text-muted"></td>
+                                            <td class="text-muted"></td>
+                                            <td class="text-muted"></td>
+                                            <td class="text-muted">1 шт.</td>
+                                            <td><b>{{ item.order.delivery.price }} ₽</b></td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="delivery-details container">
+                                {% if item.order.delivery %}
+                                <hr>
+                                <span id="sub-title">
+                                    <p><b>Детали доставки</b></p>
+                                </span>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <p><b>Трек-номер:</b></p>
+                                    </div>
+                                    <div class="col-9">
+                                        {% if item.order.delivery.delivery_id %}
+                                            <p>{{ item.order.delivery.delivery_id }}</p>
+                                        {% else %}
+                                            <p>Трек-номер отсутствует</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <p><b>Адрес:</b></p>
+                                    </div>
+                                    <div class="col-9">
+                                        {% if item.order.delivery.address %}
+                                            <p>{{ item.order.delivery.address }}</p>
+                                        {% else %}
+                                            <p>Адрес доставки отсутствует</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <p><b>Статус:</b></p>
+                                    </div>
+                                    <div class="col-9">
+                                        {% if item.order.delivery.delivery_id %}
+                                            <p>{{ item.order.delivery.get_status_display }}</p>
+                                        {% else %}
+                                            <p>Заказ еще не передан в доставку</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-3">
+                                        <p><b>Комментарий курьеру:</b></p>
+                                    </div>
+                                    <div class="col-9">
+                                        {% if item.order.delivery.description %}
+                                            <p>{{ item.order.delivery.description }}</p>
+                                        {% else %}
+                                            <p>Заказ еще не передан в доставку</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="summary container">
+                                <hr>
+                                <div class="total">
+                                    <div class="d-flex flex-row py-1 justify-content-between">
+                                        <span class="justify-content-start">
+                                            <p><b>Общая стоимость:</b></p>
+                                        </span>
+                                        <span class="col-6"></span>
+                                        <span class="justify-content-start">
+                                            <p><b>{{ item.order.price }} ₽</b></p>
+                                        </span>
+                                        <span class="col-1"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </dd>
+                    {% endfor %}
+                </dl>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
