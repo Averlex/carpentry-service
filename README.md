@@ -8,14 +8,17 @@ Full-stack web service for a carpentry workshop. Django backend with user manage
 
 ## Table of Contents
 
-- [Overview](#-overview)
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Backend Logic](#-backend-logic)
-- [User Interface](#-user-interface)
-- [Screenshots](#-screenshots)
-- [Setup](#-setup)
-- [Management Commands](#-management-commands)
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Backend Logic](#backend-logic)
+- [User Interface](#user-interface)
+- [Application Flow](#application-flow)
+  - [Landing Page](#landing-page)
+  - [Product Configuration](#product-configuration)
+  - [Order Confirmation](#order-confirmation)
+  - [Order History](#order-history)
+- [Setup](#setup)
 
 ## Overview
 
