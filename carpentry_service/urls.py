@@ -23,7 +23,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('home/', views.index, name='home'),
     path('index/', views.index, name='index'),
-    path('gallery/', views.gallery, name='gallery'),
     path('faq/', views.about, name='faq'),
     path('about/', views.about, name='about'),
     path('order/', views.order, name='order'),

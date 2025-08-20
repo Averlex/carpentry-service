@@ -17,12 +17,6 @@ def index(request):
     return render(request, 'webapp/index.html')
 
 
-def gallery(request):
-    # Sample photos context; replace with actual photo context
-    photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"]
-    return render(request, 'webapp/gallery.html', {'photos': photos})
-
-
 def about(request):
     # Getting random top-3 FAQs to display on the page
     faqs = list(FAQ.objects.all())
