@@ -4,7 +4,7 @@
 [![Django](https://img.shields.io/badge/Django-5.1+-red?logo=django&logoColor=white)](https://www.djangoproject.com)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Full-stack web service for a carpentry workshop. Django backend with user management, product configuration, and order order lifecycle tracking.
+Full-stack web service for a carpentry workshop. Django backend with user management, product configuration, and order lifecycle tracking.
 
 ## Table of Contents
 
