@@ -12,3 +12,8 @@ webapp/templates/login.html linguist-generated
 webapp/templates/logout.html linguist-generated
 webapp/templates/signup.html linguist-generated
 webapp/templates/policy.html linguist-generated
+
+# Amother Django templates
+webapp/templates/about.html linguist-generated
+webapp/templates/index.html linguist-generated
+webapp/templates/profile.html linguist-generated
